@@ -6,36 +6,41 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
 
-class Connection extends Thread {
+public class Connection extends Thread {
 	DataInputStream in;
 	DataOutputStream out;
-	Socket clientSocket;
+	Socket clienteSocket;
 
-	public Connection(Socket aClientSocket) {
+	public Connection(Socket meuClienteSocket) {
 		try {
-			clientSocket = aClientSocket;
-			in = new DataInputStream(clientSocket.getInputStream());
-			out = new DataOutputStream(clientSocket.getOutputStream());
+			clienteSocket = meuClienteSocket;
+			in = new DataInputStream(clienteSocket.getInputStream());
+			out = new DataOutputStream(clienteSocket.getOutputStream());
+			// Iniciando a thread
 			this.start();
 		} catch (IOException e) {
-			System.out.println("Connection:" + e.getMessage());
+			System.out.println("Conexão: " + e.getMessage());
 		}
 	}
 
 	public void run() {
-		try { // an echo server
+		try {
+			// Um servidor de eco.
+			// capturando dados enviados pelo cliente.
 			String data = in.readUTF();
-			System.out.println("Recebida: " + data);
-			out.writeUTF(data);
+			System.out.println("Recebido: " + data);
+			// Enviando dados para o servidor.
+			out.writeUTF("Do servidor da Larissa para "+data);
 		} catch (EOFException e) {
 			System.out.println("EOF:" + e.getMessage());
 		} catch (IOException e) {
 			System.out.println("IO:" + e.getMessage());
 		} finally {
 			try {
-				clientSocket.close();
+				clienteSocket.close();
 			} catch (IOException e) {
-				/* close failed */}
+				System.out.println("Falha ao fechar:" + e.getMessage());
+			}
 		}
 	}
 }

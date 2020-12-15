@@ -10,15 +10,19 @@ import java.net.UnknownHostException;
 public class TCPClient {
 
 	public static void main(String[] args) {
-		Socket s = null;
+		Socket cliente = null;
+		int porta = 7896;
 		try {
-			int porta = 7896;
-			s = new Socket("localhost", porta);
-			DataInputStream in = new DataInputStream(s.getInputStream());
-			DataOutputStream out = new DataOutputStream(s.getOutputStream());
-			out.writeUTF("localhost");
+
+			cliente = new Socket("localhost", porta);
+			// capturando dados enviados pelo servidor.
+			DataInputStream in = new DataInputStream(cliente.getInputStream());
+			// Enviando dados para o servidor.
+			DataOutputStream out = new DataOutputStream(cliente.getOutputStream());
+			out.writeUTF("o cliente João Victor.");
 			String data = in.readUTF();
-			System.out.print("Conectado com sucesso: " + data + " porta: "+ porta);
+			System.out.println("Conectado com sucesso!");
+			System.out.println(data + " Através da porta: " + porta + ".");
 		} catch (UnknownHostException e) {
 			System.out.println("Sock: " + e.getMessage());
 		} catch (EOFException e) {
@@ -26,11 +30,11 @@ public class TCPClient {
 		} catch (IOException e) {
 			System.out.println("IO: " + e.getMessage());
 		} finally {
-			if (s != null) {
+			if (cliente != null) {
 				try {
-					s.close();
+					cliente.close();
 				} catch (IOException e) {
-					System.out.println("Close: " + e.getMessage());
+					System.out.println("Fechar: " + e.getMessage());
 				}
 			}
 		}
